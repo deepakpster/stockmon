@@ -1,0 +1,20 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Stocks Monitoring System - server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Deepak Puttarangaswamy (PD)",
+  "license": "ISC",
+  "dependencies": {
+    "@grpc/proto-loader": "^0.3.0",
+    "apiai": "^4.0.3",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "grpc": "^1.15.1",
+    "socket.io": "^2.1.1",
+    "superagent": "^4.0.0-beta.5"
+  }
+}

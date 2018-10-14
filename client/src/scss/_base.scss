@@ -1,0 +1,47 @@
+:global {
+  html,
+  body {
+    background-color: #f9f9f9;
+    height: 100%;
+    width: 100%;
+    & *:not(i) {
+      font-family: "Nunito", sans-serif;
+      font-size: 12px;
+    }
+    .input.is-active,
+    .input.is-focused,
+    .input:active,
+    .input:focus,
+    .textarea.is-active,
+    .textarea.is-focused,
+    .textarea:active,
+    .textarea:focus {
+      -webkit-box-shadow: none;
+      box-shadow: none;
+    }
+    #app {
+      height: inherit;
+      display: grid;
+    }
+  }
+  .materialIcons {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'liga';
+    font-family: 'Material Icons';
+    display: inline-block;
+  }
+  .clickable {
+    cursor: pointer;
+  }
+  .hidden {
+    display: none!important;
+  }
+  .divider {
+    width: 2px;
+    margin: 6px 0;
+    height: 4vh;
+    background: #e7e7e7;
+  }
+}
