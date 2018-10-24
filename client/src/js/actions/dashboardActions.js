@@ -1,6 +1,6 @@
 // @flow
 import {fetchStockUpdate} from '../sockets';
-import {getNifty50Gainers} from '../utils/api';
+import {getNifty50Gainers, zLogin} from '../utils/api';
 
 // export function updateUserChat(chat) {
 // 	return (dispatch) => {
@@ -34,6 +34,21 @@ export function updateStock(stock) {
 	};
 }
 
+export function login(z_cookie, z_csrftoken) {
+  return (dispatch) => {
+    return zLogin(z_cookie, z_csrftoken).then(()=>{
+		  dispatch({ type: 'LOGIN_SUCCESS'});
+    }).catch(err=>{
+		  dispatch({ type: 'LOGIN_FAILED', err});
+    })
+  }
+}
+
+export function updateMarketWatch(marketWatchStocks) {
+  return (dispatch) => {
+		dispatch({ type: 'UPDATE_MARKET_WATCH', marketWatchStocks });
+	};
+}
 // export function clearChat() {
 // 	return (dispatch) => {
 // 		dispatch({ type: 'CLEAR_CHAT' });

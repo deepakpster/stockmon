@@ -3,11 +3,27 @@
     .title {
       display: flex;
       height: 45px;
-      background-image: linear-gradient(90deg, #1c776e, #2eb5a8);
+      background-image: linear-gradient(90deg, #2e86de, #54a0ff);
       span {
         font-size: 22px;
         margin: auto;
         color:white;
+      }
+    }
+    .loginContainer {
+      display: flex;
+      span,
+      input {
+        margin: 5px 0;
+        height: 40px;
+      }
+      input {
+        flex: 1;
+        margin-left: 15px;
+      }
+      span {
+        max-width: 200px;
+        margin-right: 15px;
       }
     }
     .container {

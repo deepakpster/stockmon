@@ -31,7 +31,7 @@ export default class TableView extends React.Component {
                 symbol, tradedQuantity, turnoverInLakhs
               } = stock;
               return (
-                <tr>
+                <tr key={`${symbol}-${ltp}`}>
                   <td>{symbol}</td>
                   <td>{ltp}</td>
                   <td>{netPrice}</td>

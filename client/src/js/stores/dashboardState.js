@@ -2,6 +2,7 @@
 
 const initialState = {
   stocks: {},
+  marketWatchStocks: [],
   nifty50Gainers: []
 };
 
@@ -20,6 +21,9 @@ export default(state = initialState, action) => {
         data: st_timeSeries
       };
       return {...state, stocks}
+    case 'UPDATE_MARKET_WATCH':
+      const {marketWatchStocks} = action;
+      return {...state, marketWatchStocks}
     default:
       return state;
   }

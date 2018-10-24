@@ -13,3 +13,17 @@ export function getNifty50Gainers(): Promise < Object > {
       });
   });
 }
+
+export function zLogin(zCookie, zToken): Promise <Object> {
+  return new Promise((resolve, reject)=>{
+    request.post(`${API_BASE}/login`)
+      .send({zCookie, zToken})
+      .end((err, res) => {
+        if (err) {
+          reject(res.body.error);
+        } else {
+          resolve(res.body);
+        }
+      });
+  })
+}
