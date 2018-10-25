@@ -3,7 +3,10 @@
 const initialState = {
   stocks: {},
   marketWatchStocks: [],
-  nifty50Gainers: []
+  nifty50Gainers: [],
+  holdings: [],
+  positions: {day: [], net: []},
+  orders: []
 };
 
 export default(state = initialState, action) => {
@@ -24,6 +27,15 @@ export default(state = initialState, action) => {
     case 'UPDATE_MARKET_WATCH':
       const {marketWatchStocks} = action;
       return {...state, marketWatchStocks}
+    case 'UPDATE_HOLDINGS':
+      const {holdings} = action;
+      return {...state, holdings}
+    case 'UPDATE_POSITIONS':
+      const {positions} = action;
+      return {...state, positions}
+    case 'UPDATE_ORDERS':
+      const {orders} = action;
+      return {...state, orders}
     default:
       return state;
   }

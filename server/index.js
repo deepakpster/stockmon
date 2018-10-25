@@ -1,5 +1,4 @@
 'use strict';
-
 const express = require('express');
 const superagent = require('superagent');
 const bodyParser = require('body-parser');
@@ -8,6 +7,9 @@ const db = require('./models/db');
 const {getCredentials, setCredentials} = require('./models/zCredential');
 const Login = require('./models/login');
 const StocksWatch = require('./models/StocksWatch');
+const Holdings = require('./models/Holdings');
+const Positions = require('./models/Positions');
+const Orders = require('./models/Orders');
 
 
 const app = new express();
@@ -31,6 +33,7 @@ app.get("/", (req, res) => {
 app.post("/login", (req, res) => {
   const {zToken, zCookie} = req.body;
   setCredentials(zCookie, zToken);
+  getHoldings();
   getMarketWatch();
   const loginObj = new Login(req.body);
   Login.deleteMany({}).then(()=>{
@@ -58,11 +61,19 @@ app.get("/nifty50Gainers", (req, res) => {
 const io = require('socket.io')(server);
 
 main() 
-
 function main() {
+  Login.find({}, (err, logins)=>{
+    logins.forEach(loginCreds=>{
+      setCredentials(loginCreds.zCookie, loginCreds.zToken);
+    })
+  });
   io.on('connection', function(socketX) {
     socket = socketX;
     console.log('Socket Connected ...');
+    loadInformation();
+    setInterval(()=>{
+      loadInformation();
+    }, 300000)
     socket.on('fetchStockUpdate', symbol => {
       superagent.get('https://www.alphavantage.co/query?')
       .query({
@@ -81,15 +92,78 @@ function main() {
   });
 }
 
+function loadInformation() {
+  getHoldings();
+  getMarketWatch();
+  getPositions();
+  getOrders();
+}
+
+function getHoldings() {
+  const z_creds = getCredentials();
+  superagent.get(`${ZERODHA_API}/portfolio/holdings`)
+    .set('x-csrftoken', z_creds.token)
+    .set('x-kite-version', '1.10.2')
+    .set('cookie', z_creds.cookie)
+    .end((err, res) => {
+      if (err) { return console.log('getHoldings:: error :: ', err); }
+      const holdings = JSON.parse(res.text).data;
+      Holdings.deleteMany({}).then(()=>{
+        console.log('holdings::', holdings);
+        Holdings.insertMany(holdings, (err, res)=>{
+          if (err) throw err;
+          socket.emit('holdings', holdings);
+        })
+      })
+    });
+}
+
+function getPositions() {
+  const z_creds = getCredentials();
+  superagent.get(`${ZERODHA_API}/portfolio/positions`)
+    .set('x-csrftoken', z_creds.token)
+    .set('x-kite-version', '1.10.2')
+    .set('cookie', z_creds.cookie)
+    .end((err, res) => {
+      if (err) { return console.log('getPositions:: error :: ', err); }
+      const positions = JSON.parse(res.text).data;
+      Positions.deleteMany({}).then(()=>{
+        console.log('positions::', positions);
+        Positions.insertMany(positions, (err, res)=>{
+          if (err) throw err;
+          socket.emit('positions', positions);
+        })
+      })
+    });
+}
+
+function getOrders() {
+  const z_creds = getCredentials();
+  superagent.get(`${ZERODHA_API}/orders`)
+    .set('x-csrftoken', z_creds.token)
+    .set('x-kite-version', '1.10.2')
+    .set('cookie', z_creds.cookie)
+    .end((err, res) => {
+      if (err) { return console.log('getOrders:: error :: ', err); }
+      const orders = JSON.parse(res.text).data;
+      Orders.deleteMany({}).then(()=>{
+        console.log('orders::', orders);
+        Orders.insertMany(orders, (err, res)=>{
+          if (err) throw err;
+          socket.emit('orders', orders);
+        })
+      })
+    });
+}
+
 function getMarketWatch(){
-  console.log('getCredentials()', getCredentials());
   const z_creds = getCredentials();
   superagent.get(`${ZERODHA_API}/marketwatch`)
     .set('x-csrftoken', z_creds.token)
     .set('x-kite-version', '1.10.1')
     .set('cookie', z_creds.cookie)
     .end((err, res) => {
-      if (err) { return console.log('Zerodha', err.text); }
+      if (err) { return console.log('getMarketWatch:: error :: ', err.text); }
       console.log('marketWatch:::', res.text)
       const stocksToWatch = JSON.parse(res.text).data[0].items;
       StocksWatch.insertMany(stocksToWatch, (err, res)=>{

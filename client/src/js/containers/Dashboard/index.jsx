@@ -7,6 +7,9 @@ import { withRouter, Redirect } from 'react-router-dom';
 import { dashboardActions } from './../../actions';
 import Nifty50Gainers from './../../components/NSEViews/nifty50Gainers';
 import MarketWatchTable from './../../components/Zerodha/MarketWatchTable';
+import HoldingsTable from './../../components/Zerodha/HoldingsTable';
+import OrdersTable from './../../components/Zerodha/OrdersTable';
+import PositionsView from './../../components/Zerodha/PositionsView';
 import styles from './styles.scss';
 
 
@@ -43,7 +46,7 @@ class Dashboard extends React.Component {
 		})
 	}
   render() {
-		const {stocks, marketWatchStocks} = this.props.dashboardState;
+		const {stocks, marketWatchStocks, holdings, positions, orders} = this.props.dashboardState;
 		const {zCookie} = this.state;
 		console.log('marketWatchStocks', marketWatchStocks);
 		return (
@@ -55,7 +58,21 @@ class Dashboard extends React.Component {
 					<input placeholder={`Feed me the cookie`} value={zCookie} onChange={this.setCookie} type="text"></input>
 					<span className={`button`} onClick={this.loginViaZerodha}>Set Cookies</span>
 				</div>
-				<MarketWatchTable store={marketWatchStocks} />
+				{/* <MarketWatchTable store={marketWatchStocks} /> */}
+				<div className={styles.holdPosContainer}>
+					<div className={styles.holdings}>
+						<span>Holdings</span>
+						<HoldingsTable store={holdings} />
+					</div>
+					<div className={styles.positions}>
+						<span>Positions</span>
+						<PositionsView store={positions} />
+					</div>
+					<div className={styles.orders}>
+						<span>Orders</span>
+						<OrdersTable store={orders} />
+					</div>
+				</div>
 				{/* <Nifty50Gainers {...this.props}/> */}
 				<pre>
 					{JSON.stringify(stocks)}

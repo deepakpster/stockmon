@@ -49,6 +49,24 @@ export function updateMarketWatch(marketWatchStocks) {
 		dispatch({ type: 'UPDATE_MARKET_WATCH', marketWatchStocks });
 	};
 }
+
+export function updateHoldings(holdings) {
+  return (dispatch) => {
+		dispatch({ type: 'UPDATE_HOLDINGS', holdings });
+	};
+}
+
+export function updatePositions(positions) {
+  return (dispatch) => {
+		dispatch({ type: 'UPDATE_POSITIONS', positions });
+	};
+}
+
+export function updateOrders(orders) {
+  return (dispatch) => {
+		dispatch({ type: 'UPDATE_ORDERS', orders });
+	};
+}
 // export function clearChat() {
 // 	return (dispatch) => {
 // 		dispatch({ type: 'CLEAR_CHAT' });

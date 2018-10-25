@@ -10,6 +10,16 @@
         color:white;
       }
     }
+    .holdPosContainer {
+      display: flex;
+      flex-direction: column;
+      .holdings,
+      .positions,
+      .orders {
+        flex: 1;
+        margin: auto 15px;
+      }
+    }
     .loginContainer {
       display: flex;
       span,
