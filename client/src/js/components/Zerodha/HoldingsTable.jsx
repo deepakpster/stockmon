@@ -4,9 +4,7 @@ import styles from './styles.scss';
 
 export default class HoldingsTable extends React.Component {
   render() {
-    console.log('store', this.props.store)
     const {store} = this.props;
-    console.log('')
     return (
       <table className={`table ${styles.table}`}>
         <thead>
@@ -25,6 +23,9 @@ export default class HoldingsTable extends React.Component {
         <tbody>
           {
             store && store.map(stock=>{
+              if(stock.quantity <= 0) {
+                return
+              }
               const {
                 average_price,
                 close_price,
@@ -45,7 +46,7 @@ export default class HoldingsTable extends React.Component {
                 tradingsymbol,
               } = stock;
               const netChange = parseFloat(last_price - average_price).toFixed(2);
-              const netChangePercent = parseFloat((netChange*100)/average_price).toFixed(2);
+              const netChangePercent = average_price ? parseFloat((netChange*100)/average_price).toFixed(2) : 0;
 
               return (
                 <tr key={`${tradingsymbol}`}>

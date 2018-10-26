@@ -5,7 +5,6 @@ import PositionsTable from './PositionsTable';
 
 export default class PositionsView extends React.Component {
   render() {
-    console.log('store', this.props.store)
     const {store} = this.props;
     return (
       <div>

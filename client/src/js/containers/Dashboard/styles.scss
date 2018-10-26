@@ -10,9 +10,16 @@
         color:white;
       }
     }
+    .marketwatchcont {
+      max-height: 40vh;
+      overflow: scroll;
+      margin: 15px;
+    }
     .holdPosContainer {
       display: flex;
-      flex-direction: column;
+      .column {
+        flex: 1;
+      }
       .holdings,
       .positions,
       .orders {

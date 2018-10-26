@@ -4,9 +4,7 @@ import styles from './styles.scss';
 
 export default class MarketWatchTable extends React.Component {
   render() {
-    console.log('store', this.props.store)
     const {store} = this.props;
-    console.log('')
     return (
       <table className={`table ${styles.table}`}>
         <thead>

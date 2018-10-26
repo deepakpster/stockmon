@@ -4,7 +4,6 @@ import styles from './styles.scss';
 
 export default class TableView extends React.Component {
   render() {
-    console.log('store', this.props.store)
     const {data} = this.props.store;
     return (
       <table className={`table ${styles.table}`}>

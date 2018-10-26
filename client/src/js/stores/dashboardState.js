@@ -12,7 +12,6 @@ const initialState = {
 export default(state = initialState, action) => {
   switch (action.type) {
     case 'FETCH_NIFTY_50_GAINERS_SUCCESS':
-      console.log('nifty50Gainers::state', action.data);
       return {...state, nifty50Gainers: action.data}
     case 'UPDATE_STOCK_DETAIL':
       const { stock } = action;

@@ -48,29 +48,36 @@ class Dashboard extends React.Component {
   render() {
 		const {stocks, marketWatchStocks, holdings, positions, orders} = this.props.dashboardState;
 		const {zCookie} = this.state;
-		console.log('marketWatchStocks', marketWatchStocks);
 		return (
 			<div className={styles.dashboard}>
 				<div className={styles.title}>
-					<span>My Stocks Monitor</span>
+					<span>Stocks Monster</span>
 				</div>
 				<div className={styles.loginContainer}>
 					<input placeholder={`Feed me the cookie`} value={zCookie} onChange={this.setCookie} type="text"></input>
 					<span className={`button`} onClick={this.loginViaZerodha}>Set Cookies</span>
 				</div>
-				{/* <MarketWatchTable store={marketWatchStocks} /> */}
-				<div className={styles.holdPosContainer}>
-					<div className={styles.holdings}>
-						<span>Holdings</span>
-						<HoldingsTable store={holdings} />
+				<div>
+					<div className={styles.marketwatchcont}>
+						<MarketWatchTable store={marketWatchStocks} />
 					</div>
-					<div className={styles.positions}>
-						<span>Positions</span>
-						<PositionsView store={positions} />
-					</div>
-					<div className={styles.orders}>
-						<span>Orders</span>
-						<OrdersTable store={orders} />
+					<div className={styles.holdPosContainer}>
+						<div className={styles.column}>
+							<div className={styles.holdings}>
+								<span>Holdings</span>
+								<HoldingsTable store={holdings} />
+							</div>
+							<div className={styles.positions}>
+								<span>Positions</span>
+								<PositionsView store={positions} />
+							</div>
+						</div>
+						<div className={styles.column}>
+							<div className={styles.orders}>
+								<span>Orders</span>
+								<OrdersTable store={orders} />
+							</div>
+						</div>
 					</div>
 				</div>
 				{/* <Nifty50Gainers {...this.props}/> */}

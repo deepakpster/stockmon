@@ -4,7 +4,6 @@ import styles from './styles.scss';
 
 export default class PositionsTable extends React.Component {
   render() {
-    console.log('store', this.props.store)
     const {store} = this.props;
     let totalPNL = 0;
     return (
@@ -24,6 +23,9 @@ export default class PositionsTable extends React.Component {
           {
             
             store && store.map(stock=>{
+              if(stock.quantity <= 0) {
+                return
+              }
               const {
                 average_price,
                 buy_m2m,
@@ -56,7 +58,7 @@ export default class PositionsTable extends React.Component {
                 value
               } = stock;
               const netChange = parseFloat(last_price - average_price).toFixed(2);
-              const netChangePercent = average_price > 0 ? parseFloat((netChange*100)/average_price).toFixed(2) : 0;
+              const netChangePercent = average_price ? parseFloat((netChange*100)/average_price).toFixed(2) : 0;
               totalPNL += pnl;
               return (
                 <tr key={`${tradingsymbol}`}>

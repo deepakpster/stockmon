@@ -58,6 +58,20 @@ app.get("/nifty50Gainers", (req, res) => {
     });
 });
 
+app.get("/nifty50Gainers", (req, res) => {
+  superagent.get(`${API_BASE}/gainers/niftyGainers1.json`)
+    .end((err, resp) => {
+      if (err) {
+        console.log('Gainers Error:', err);
+        res.send(JSON.stringify({error: err})).status(500);
+      } else {
+        console.log('Gainers res:', resp);
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.parse(resp.text)).status(200);
+      }
+    });
+});
+
 const io = require('socket.io')(server);
 
 main() 

@@ -6,7 +6,7 @@ import styles from './styles.scss';
 export default class Nifty50Gainers extends React.Component {
   componentDidMount() {
     const {fetchNifty50Gainers} = this.props.actions;
-		fetchNifty50Gainers();
+		// fetchNifty50Gainers();
   }
   render() {
     const {nifty50Gainers} = this.props.dashboardState;
