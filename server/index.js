@@ -3,6 +3,7 @@ const express = require('express');
 const superagent = require('superagent');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const moment = require('moment');
 const db = require('./models/db');
 const {getCredentials, setCredentials} = require('./models/zCredential');
 const Login = require('./models/login');
@@ -48,10 +49,8 @@ app.get("/nifty50Gainers", (req, res) => {
   superagent.get(`${API_BASE}/gainers/niftyGainers1.json`)
     .end((err, resp) => {
       if (err) {
-        console.log('Gainers Error:', err);
         res.send(JSON.stringify({error: err})).status(500);
       } else {
-        console.log('Gainers res:', resp);
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.parse(resp.text)).status(200);
       }
@@ -62,10 +61,8 @@ app.get("/nifty50Gainers", (req, res) => {
   superagent.get(`${API_BASE}/gainers/niftyGainers1.json`)
     .end((err, resp) => {
       if (err) {
-        console.log('Gainers Error:', err);
         res.send(JSON.stringify({error: err})).status(500);
       } else {
-        console.log('Gainers res:', resp);
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.parse(resp.text)).status(200);
       }
@@ -85,32 +82,101 @@ function main() {
     socket = socketX;
     console.log('Socket Connected ...');
     loadInformation();
+    automateStopLoss();
     setInterval(()=>{
-      loadInformation();
+      if(isValidTime()) {
+        loadInformation();
+        // setTimeout(automateStopLoss, 5000);
+      }
     }, 300000)
-    socket.on('fetchStockUpdate', symbol => {
-      superagent.get('https://www.alphavantage.co/query?')
-      .query({
-        apikey: '2GXQ81VRB30I9V5L',
-        function: 'TIME_SERIES_INTRADAY',
-        symbol: 'NSE:YESBANK',
-        interval: '15min',
-        outputsize: 'full'
-      })
-      .end((err, res) => {
-        if (err) { return console.log(err); }
-        console.log('Stok details:: ', res);
-        socket.emit('stockDetailUpdated', JSON.parse(res.text));
-      });
-    });
+    // socket.on('fetchStockUpdate', symbol => {
+    //   superagent.get('https://www.alphavantage.co/query?')
+    //   .query({
+    //     apikey: '2GXQ81VRB30I9V5L',
+    //     function: 'TIME_SERIES_INTRADAY',
+    //     symbol: 'NSE:YESBANK',
+    //     interval: '15min',
+    //     outputsize: 'full'
+    //   })
+    //   .end((err, res) => {
+    //     if (err) { return console.log(err); }
+    //     console.log('Stok details:: ', res);
+    //     socket.emit('stockDetailUpdated', JSON.parse(res.text));
+    //   });
+    // });
   });
 }
 
+function isValidTime() {
+  const hhmm = moment().format('HHmm');
+  const isWeekend = moment().day() === 0 || moment().day() === 6;
+  return true; //!isWeekend && (hhmm >= 900 && hhmm <= 1530);
+}
+
 function loadInformation() {
-  getHoldings();
   getMarketWatch();
   getPositions();
   getOrders();
+  getHoldings();
+}
+
+function automateStopLoss(){
+  console.log('setStopLoss');
+  const p1 = Holdings.find({});
+  const p2 = Positions.find({});
+  const p3 = Orders.find({
+    status: "PENDING",
+    transaction_type: "SELL",
+    order_type: "SL"
+  });
+
+  Promise.all([p1, p2, p3]).then(values=>{
+    const holdings = values[0];
+    const positions = values[1];
+    const orders = values[2];
+
+    //check if there are pending orders with trigger set
+
+    //check if there are any new positions
+
+    //check if there are any unsold holdings
+    for(let i=0; i<orders.length;i++) {
+      const order = orders[i];
+      console.log('check pending orders');
+    }
+    // setStopLoss();
+  })
+}
+
+function setStopLoss(order) {
+  const z_creds = getCredentials();
+  Object.assign({},aaaa, params);
+  const params = {
+    exchange: order.exchange,
+    tradingsymbol: order.tradingsymbol,
+    transaction_type: 'SELL',
+    order_type: 'SL',
+    quantity: order.quantity,
+    price: order.price,
+    product: order.product,
+    validity: 'DAY',
+    disclosed_quantity: 0,
+    trigger_price: order.trigger_price,
+    squareoff: 0,
+    stoploss: 0,
+    trailing_stoploss: 0,
+    variety: order.variety,
+    user_id: 'SG5393'
+  };
+  superagent.post(`${ZERODHA_API}/orders/regular`)
+    .set('x-csrftoken', z_creds.token)
+    .set('x-kite-version', '1.10.2')
+    .set('cookie', z_creds.cookie)
+    .set('content-type', 'application/x-www-form-urlencoded')
+    .send(params)
+    .end((err, res) => {
+      console.log('set order', err);
+    });
 }
 
 function getHoldings() {
@@ -120,10 +186,8 @@ function getHoldings() {
     .set('x-kite-version', '1.10.2')
     .set('cookie', z_creds.cookie)
     .end((err, res) => {
-      if (err) { return console.log('getHoldings:: error :: ', err); }
       const holdings = JSON.parse(res.text).data;
       Holdings.deleteMany({}).then(()=>{
-        console.log('holdings::', holdings);
         Holdings.insertMany(holdings, (err, res)=>{
           if (err) throw err;
           socket.emit('holdings', holdings);
@@ -139,10 +203,8 @@ function getPositions() {
     .set('x-kite-version', '1.10.2')
     .set('cookie', z_creds.cookie)
     .end((err, res) => {
-      if (err) { return console.log('getPositions:: error :: ', err); }
       const positions = JSON.parse(res.text).data;
       Positions.deleteMany({}).then(()=>{
-        console.log('positions::', positions);
         Positions.insertMany(positions, (err, res)=>{
           if (err) throw err;
           socket.emit('positions', positions);
@@ -158,10 +220,8 @@ function getOrders() {
     .set('x-kite-version', '1.10.2')
     .set('cookie', z_creds.cookie)
     .end((err, res) => {
-      if (err) { return console.log('getOrders:: error :: ', err); }
       const orders = JSON.parse(res.text).data;
       Orders.deleteMany({}).then(()=>{
-        console.log('orders::', orders);
         Orders.insertMany(orders, (err, res)=>{
           if (err) throw err;
           socket.emit('orders', orders);
@@ -177,8 +237,6 @@ function getMarketWatch(){
     .set('x-kite-version', '1.10.1')
     .set('cookie', z_creds.cookie)
     .end((err, res) => {
-      if (err) { return console.log('getMarketWatch:: error :: ', err.text); }
-      console.log('marketWatch:::', res.text)
       const stocksToWatch = JSON.parse(res.text).data[0].items;
       StocksWatch.insertMany(stocksToWatch, (err, res)=>{
         if (err) throw err;

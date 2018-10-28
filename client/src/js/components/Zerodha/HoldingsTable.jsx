@@ -10,6 +10,7 @@ export default class HoldingsTable extends React.Component {
         <thead>
           <tr>
             <th>Instrument</th>
+            <th>Avl. Qty</th>
             <th>Qty</th>
             <th>Avg.cost</th>
             <th>LTP</th>
@@ -23,7 +24,7 @@ export default class HoldingsTable extends React.Component {
         <tbody>
           {
             store && store.map(stock=>{
-              if(stock.quantity <= 0) {
+              if(t1_quantity == 0 && stock.quantity <= 0) {
                 return
               }
               const {
@@ -51,11 +52,12 @@ export default class HoldingsTable extends React.Component {
               return (
                 <tr key={`${tradingsymbol}`}>
                   <td>{tradingsymbol}</td>
+                  <td>{t1_quantity}</td>
                   <td>{quantity}</td>
-                  <td>{average_price}</td>
+                  <td>{parseFloat(average_price).toFixed(2)}</td>
                   <td>{last_price}</td>
                   <td>{price}</td>
-                  <td>{pnl}</td>
+                  <td>{parseFloat(pnl).toFixed(2)}</td>
                   <td>{`${netChangePercent}%`}</td>
                   <td>{collateral_quantity}</td>
                   <td>{collateral_type}</td>
