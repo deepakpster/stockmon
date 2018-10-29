@@ -3,6 +3,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackCleanupPlugin = require('webpack-cleanup-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const loaders = require('./webpack.loaders');
@@ -35,6 +36,7 @@ const config = {
 	stats: 'errors-only',
 	plugins: [
 		new WebpackCleanupPlugin(),
+		new ManifestPlugin(),
 		new webpack.DefinePlugin({
 			'process.env': {
 				NODE_ENV: '"production"',

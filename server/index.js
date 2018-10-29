@@ -186,6 +186,9 @@ function getHoldings() {
     .set('x-kite-version', '1.10.2')
     .set('cookie', z_creds.cookie)
     .end((err, res) => {
+      if(err) {
+        return;
+      }
       const holdings = JSON.parse(res.text).data;
       Holdings.deleteMany({}).then(()=>{
         Holdings.insertMany(holdings, (err, res)=>{
@@ -203,6 +206,9 @@ function getPositions() {
     .set('x-kite-version', '1.10.2')
     .set('cookie', z_creds.cookie)
     .end((err, res) => {
+      if(err) {
+        return;
+      }
       const positions = JSON.parse(res.text).data;
       Positions.deleteMany({}).then(()=>{
         Positions.insertMany(positions, (err, res)=>{
@@ -220,6 +226,9 @@ function getOrders() {
     .set('x-kite-version', '1.10.2')
     .set('cookie', z_creds.cookie)
     .end((err, res) => {
+      if(err) {
+        return;
+      }
       const orders = JSON.parse(res.text).data;
       Orders.deleteMany({}).then(()=>{
         Orders.insertMany(orders, (err, res)=>{
@@ -237,6 +246,9 @@ function getMarketWatch(){
     .set('x-kite-version', '1.10.1')
     .set('cookie', z_creds.cookie)
     .end((err, res) => {
+      if(err) {
+        return;
+      }
       const stocksToWatch = JSON.parse(res.text).data[0].items;
       StocksWatch.insertMany(stocksToWatch, (err, res)=>{
         if (err) throw err;

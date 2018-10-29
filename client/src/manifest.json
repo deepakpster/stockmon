@@ -1,0 +1,7 @@
+{
+  "name":"Stocks Monitor",
+  "description":"A personalised dashbord for monitoring stock",
+  "version":"1",
+  "manifest_version":2,
+  "permissions":["storage"]
+}
