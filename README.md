@@ -1,2 +1,2 @@
-# stockmon
-Stock Monitoring System
+# Sales Management System
+Sales Management System

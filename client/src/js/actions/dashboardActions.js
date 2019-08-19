@@ -1,6 +1,6 @@
 // @flow
 import {fetchStockUpdate} from '../sockets';
-import {getNifty50Gainers, zLogin} from '../utils/api';
+import {fetchAllContactsInfo} from '../utils/api';
 
 // export function updateUserChat(chat) {
 // 	return (dispatch) => {
@@ -9,66 +9,14 @@ import {getNifty50Gainers, zLogin} from '../utils/api';
 // 	};
 // }
 
-export function fetchNifty50Gainers () {
-  return (dispatch: Dispatch, getState: GetState) => {
-    return getNifty50Gainers().then(nifty50GainersList =>{
-			console.log('nifty50Gainers::action', nifty50GainersList);
-      dispatch({type: 'FETCH_NIFTY_50_GAINERS_SUCCESS', data: nifty50GainersList});
+export function getAllContactsInfo () {
+  return (dispatch, getState) => {
+    return fetchAllContactsInfo().then(contactsInfo =>{
+		  console.log('getAllContactsInfo::action', contactsInfo);
+      dispatch({type: 'FETCH_CONTACTS_INFO_SUCCESS', contactsInfo});
     }).catch(err=>{
-      dispatch({type: 'FETCH_NIFTY_50_GAINERS_FAILURE'});
+      dispatch({type: 'FETCH_CONTACTS_INFO_FAILURE'});
       console.log('error::', err);
     })
   }  
 }
-
-export function fetchStockDetail(symbol) {
-	return (dispatch) => {
-		fetchStockUpdate(symbol);
-		dispatch({ type: 'FETCH_STOCK_DETAIL', symbol });
-	};
-}
-
-export function updateStock(stock) {
-	return (dispatch) => {
-		dispatch({ type: 'UPDATE_STOCK_DETAIL', stock });
-	};
-}
-
-export function login(z_cookie, z_csrftoken) {
-  return (dispatch) => {
-    return zLogin(z_cookie, z_csrftoken).then(()=>{
-		  dispatch({ type: 'LOGIN_SUCCESS'});
-    }).catch(err=>{
-		  dispatch({ type: 'LOGIN_FAILED', err});
-    })
-  }
-}
-
-export function updateMarketWatch(marketWatchStocks) {
-  return (dispatch) => {
-		dispatch({ type: 'UPDATE_MARKET_WATCH', marketWatchStocks });
-	};
-}
-
-export function updateHoldings(holdings) {
-  return (dispatch) => {
-		dispatch({ type: 'UPDATE_HOLDINGS', holdings });
-	};
-}
-
-export function updatePositions(positions) {
-  return (dispatch) => {
-		dispatch({ type: 'UPDATE_POSITIONS', positions });
-	};
-}
-
-export function updateOrders(orders) {
-  return (dispatch) => {
-		dispatch({ type: 'UPDATE_ORDERS', orders });
-	};
-}
-// export function clearChat() {
-// 	return (dispatch) => {
-// 		dispatch({ type: 'CLEAR_CHAT' });
-// 	};
-// }

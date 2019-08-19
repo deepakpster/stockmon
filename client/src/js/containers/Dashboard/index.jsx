@@ -5,87 +5,87 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter, Redirect } from 'react-router-dom';
 import { dashboardActions } from './../../actions';
-import Nifty50Gainers from './../../components/NSEViews/nifty50Gainers';
-import MarketWatchTable from './../../components/Zerodha/MarketWatchTable';
-import HoldingsTable from './../../components/Zerodha/HoldingsTable';
-import OrdersTable from './../../components/Zerodha/OrdersTable';
-import PositionsView from './../../components/Zerodha/PositionsView';
 import styles from './styles.scss';
 
 
 class Dashboard extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			zCookie: ''
-		};
-		this.loginViaZerodha = this.loginViaZerodha.bind(this);
-		this.setCookie = this.setCookie.bind(this);
-	}
-	componentDidMount(){
-		const {fetchStockDetail} = this.props.actions;
-		// fetchStockDetail('NSE:YESBANK');
-		// setInterval(()=>{
-		// 	fetchStockDetail('NSE:YESBANK');
-		// }, 900000)
-	}
-	loginViaZerodha() {
-		const {login} = this.props.actions;
-		const {zCookie} = this.state;
-		const cookies = {};
-		zCookie.split('; ').map(pair=>{
-			const keyValue = pair.split('=');
-			cookies[keyValue[0]] = keyValue[1];
-			return pair;
-		});
-		login(zCookie, cookies['public_token']);
-	}
-	setCookie(eOpts){
-		this.setState({
-			zCookie: eOpts.target.value
-		})
-	}
+  componentWillMount(){
+    this.props.actions.getAllContactsInfo();
+  }
+	
   render() {
-		const {stocks, marketWatchStocks, holdings, positions, orders} = this.props.dashboardState;
-		const {zCookie} = this.state;
-		return (
-			<div className={styles.dashboard}>
-				<div className={styles.title}>
-					<span>Stocks Monster</span>
-				</div>
-				<div className={styles.loginContainer}>
-					<input placeholder={`Feed me the cookie`} value={zCookie} onChange={this.setCookie} type="text"></input>
-					<span className={`button`} onClick={this.loginViaZerodha}>Set Cookies</span>
-				</div>
-				<div>
-					<div className={styles.marketwatchcont}>
-						<MarketWatchTable store={marketWatchStocks} />
-					</div>
-					<div className={styles.holdPosContainer}>
-						<div className={styles.column}>
-							<div className={styles.holdings}>
-								<span>Holdings</span>
-								<HoldingsTable store={holdings} />
-							</div>
-							<div className={styles.positions}>
-								<span>Positions</span>
-								<PositionsView store={positions} />
-							</div>
-						</div>
-						<div className={styles.column}>
-							<div className={styles.orders}>
-								<span>Orders</span>
-								<OrdersTable store={orders} />
-							</div>
-						</div>
-					</div>
-				</div>
-				{/* <Nifty50Gainers {...this.props}/> */}
-				<pre>
-					{JSON.stringify(stocks)}
-				</pre>
-			</div>
-		)
+    const {contactsInfo} = this.props.dashboardState;
+		return <div className={styles.dashboard}>
+      <div className={styles.title}>
+        <span>Sales Management System</span>
+      </div>
+      <div>
+        <div className={styles.toolbar}>
+          <div class="dropdown">
+            <span>Column: </span>
+            <button class="btn dropdown-toggle" type="button" id="columnMenuBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Dropdown button
+            </button>
+            <div class="dropdown-menu" aria-labelledby="columnMenuBtn">
+              <a class="dropdown-item" href="#">Action</a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+          </div>
+          <div class="dropdown">
+            <span>Sort By: </span>
+            <button class="btn dropdown-toggle" type="button" id="sortMenuBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Dropdown button
+            </button>
+            <div class="dropdown-menu" aria-labelledby="sortMenuBtn">
+              <a class="dropdown-item" href="#">Action</a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+          </div>
+          
+        </div>
+        <div className="table-responsive-sm">
+          <table className="table table-sm table-bordered table-hover">
+            <thead>
+              <tr>
+                <th scope="col">VID</th>
+                <th scope="col">created date</th>
+                <th scope="col">since created</th>
+                <th scope="col">customer tag</th>
+                <th scope="col">company id</th>
+                <th scope="col">n1st email sent date</th>
+                <th scope="col">since n1st email sent date</th>
+                <th scope="col">hs email last open date</th>
+                <th scope="col">since hs email last open date</th>
+                <th scope="col">hs sales email last clicked</th>
+                <th scope="col">since hs sales email last clicked</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                contactsInfo.map((contactItem, idx)=>{
+                  const {vid, createdate, customer_tag, associatedcompanyid, hs_email_last_open_date, n1st_email_sent_date, hs_sales_email_last_clicked} = contactItem;
+                  return (<tr key={contactItem.vid}>
+                    <th scope="row">{vid}</th>
+                    <td>{createdate && moment(parseInt(createdate)).format('D/MM/YYYY hh:mm:ss A')}</td>
+                    <td>{createdate && moment().diff(parseInt(createdate), 'days')} days</td>
+                    <td>{customer_tag && customer_tag}</td>
+                    <td>{associatedcompanyid && associatedcompanyid}</td>
+                    <td>{n1st_email_sent_date && moment(parseInt(n1st_email_sent_date)).format('D/MM/YYYY hh:mm:ss A')}</td>
+                    <td>{n1st_email_sent_date && moment().diff(parseInt(n1st_email_sent_date), 'days')} days</td>
+                    <td>{hs_email_last_open_date && moment(parseInt(hs_email_last_open_date)).format('D/MM/YYYY hh:mm:ss A')}</td>
+                    <td>{hs_email_last_open_date && moment().diff(parseInt(hs_email_last_open_date), 'days')} days</td>
+                    <td>{hs_sales_email_last_clicked && moment(parseInt(hs_sales_email_last_clicked)).format('D/MM/YYYY hh:mm:ss A')}</td>
+                    <td>{hs_sales_email_last_clicked && moment().diff(parseInt(hs_sales_email_last_clicked), 'days')} days</td>
+                  </tr>)
+                })
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 	}
 }
 
