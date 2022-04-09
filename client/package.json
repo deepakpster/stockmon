@@ -15,7 +15,7 @@
   "dependencies": {
     "bulma": "^0.7.2",
     "history": "^4.7.2",
-    "moment": "^2.22.2",
+    "moment": "^2.29.2",
     "query-string": "^5.0.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
